@@ -37,7 +37,6 @@
 
     <!-- ios -->
     <platform name="ios">
-      <hook type="before_prepare" src="scripts/downloadiOSSDK.js" />
       <asset src="www/opentok.js" target="opentok.js" />
 
       <header-file src="src/ios/OpenTokPlugin.h" />
@@ -69,6 +68,7 @@
       <framework src="Foundation.framework" />
       <framework src="Security.framework" />
       <framework src="CFNetwork.framework" />
+      <framework src="OpenTok" type="podspec" spec="~> 2.10.1" />
 
       <!-- Adopts project's config.xml to include the OpenTokPlugin and domain whitelists -->
       <config-file target="config.xml" parent="/*/plugins">
