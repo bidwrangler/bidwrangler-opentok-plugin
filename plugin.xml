@@ -8,6 +8,11 @@
     <description>Add live video streaming to your Cordova Application</description>
     <license>Apache 2.0</license>
     <keywords>opentok,tokbox</keywords>
+    <engines>
+      <engine name="cordova" version=">=6.4.0"/>
+      <engine name="cordova-android" version=">=6.0.0"/>
+      <engine name="cordova-ios" version=">=4.3.0"/>
+    </engines>
 
     <platform name="android">
       <framework src="build-extras.gradle" custom="true" type="gradleReference" />
@@ -50,7 +55,6 @@
       <framework src="libsqlite3.dylib" />
       <framework src="libpthread.dylib" />
       <framework src="VideoToolbox.framework" />
-      <framework src="src/ios/OpenTok.framework" custom="true" />
       <framework src="AudioToolbox.framework" />
       <framework src="CoreData.framework" />
       <framework src="AVFoundation.framework" />
