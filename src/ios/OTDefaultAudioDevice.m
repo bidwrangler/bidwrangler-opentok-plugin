@@ -137,7 +137,6 @@ static OSStatus playout_cb(void *ref_con,
         _audioFormat.numChannels = 1;
         _safetyQueue = dispatch_queue_create("ot-audio-driver",
                                              DISPATCH_QUEUE_SERIAL);
-        _speakerPhone = NO;
         _preferredAudioComponentSubtype = 0;
     }
     return self;
@@ -471,7 +470,8 @@ static bool CheckError(OSStatus error, NSString* function) {
                                 error: nil];
     [mySession setPreferredInputNumberOfChannels:avAudioSessionChannels
                                            error:nil];
-    
+
+    [self removeObservers];
     isAudioSessionSetup = NO;
 }
 
@@ -488,19 +488,31 @@ static bool CheckError(OSStatus error, NSString* function) {
         buffer_num_frames = 0;
     }
 }
-- (void)setupAudioSession:(BOOL)speakerPhone
+- (void)setupAudioSession
 {
-    NSUInteger audioOptions = 0;
-    NSError *error = nil;
-    
     AVAudioSession *mySession = [AVAudioSession sharedInstance];
     _previousAVAudioSessionCategory = mySession.category;
+    avAudioSessionMode = mySession.mode;
+    avAudioSessionPreffSampleRate = mySession.preferredSampleRate;
+    avAudioSessionChannels = mySession.inputNumberOfChannels;
     
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        [mySession setMode:AVAudioSessionModeVideoChat error:nil];
+    }
+    else {
+        [mySession setMode:AVAudioSessionModeVoiceChat error:nil];
+    }
+    
+    [mySession setPreferredSampleRate: kSampleRate error: nil];
+    [mySession setPreferredInputNumberOfChannels:1 error:nil];
+    [mySession setPreferredIOBufferDuration:kPreferredIOBufferDuration
+                                      error:nil];
+    
+    NSError *error = nil;
+    NSUInteger audioOptions = AVAudioSessionCategoryOptionMixWithOthers;
 #if !(TARGET_OS_TV)
     audioOptions |= AVAudioSessionCategoryOptionAllowBluetooth ;
-    if (speakerPhone) {
-        audioOptions |= AVAudioSessionCategoryOptionDefaultToSpeaker;
-    }
+    audioOptions |= AVAudioSessionCategoryOptionDefaultToSpeaker;
     [mySession setCategory:AVAudioSessionCategoryPlayAndRecord
                withOptions:audioOptions
                      error:&error];
@@ -509,36 +521,27 @@ static bool CheckError(OSStatus error, NSString* function) {
                withOptions:audioOptions
                      error:&error];
 #endif
-    if (error)
+    
+    if (error) {
         OT_AUDIO_DEBUG(@"Audiosession setCategory %@",error);
-    
-    if (speakerPhone) {
-        [mySession setMode:AVAudioSessionModeVideoChat error: &error];
-        if (error)
-            OT_AUDIO_DEBUG(@"Audiosession setMode %@",error);
-        
-        [mySession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&error];
-        if (error)
-            OT_AUDIO_DEBUG(@"Audiosession overrideOutputAudioPort %@",error);
-    } else {
-        [mySession setMode:AVAudioSessionModeVoiceChat error: &error];
-        if (error)
-            OT_AUDIO_DEBUG(@"Audiosession setMode %@",error);
-        
-        [mySession overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:&error];
-        if (error)
-            OT_AUDIO_DEBUG(@"Audiosession overrideOutputAudioPort %@",error);
+        error = nil;
     }
+
+    AVAudioSessionPortOverride override = _speakerPhone ? AVAudioSessionPortOverrideSpeaker : AVAudioSessionPortOverrideNone;
+    _speakerPhone = NO;
+    [mySession overrideOutputAudioPort:override error:&error];
+
+    if (error) {
+        OT_AUDIO_DEBUG(@"Audiosession overrideOutputAudioPort %@",error);
+        error = nil;
+    }
+
+    [self setupListenerBlocks];
+    [mySession setActive:YES error:&error];
     
-    [mySession setPreferredIOBufferDuration:kPreferredIOBufferDuration error: &error];
     if (error)
-        OT_AUDIO_DEBUG(@"Audiosession setPreferredIOBufferDuration %@",error);
+        OT_AUDIO_DEBUG(@"Audiosession setActive %@",error);
     
-    [mySession setPreferredSampleRate: kSampleRate error: &error];
-    if (error)
-        OT_AUDIO_DEBUG(@"Audiosession setPreferredSampleRate %@",error);
-    
-    error = nil;
 }
 
 - (void)setBluetoothAsPrefferedInputDevice
@@ -632,7 +635,7 @@ static bool CheckError(OSStatus error, NSString* function) {
     NSInteger routeChangeReason =
     [[interruptionDict valueForKey:AVAudioSessionRouteChangeReasonKey]
      integerValue];
-    
+
     // We'll receive a routeChangedEvent when the audio unit starts; don't
     // process events we caused internally.
     if (AVAudioSessionRouteChangeReasonRouteConfigurationChange ==
@@ -999,16 +1002,7 @@ static OSStatus playout_cb(void *ref_con,
     
     if (!isAudioSessionSetup)
     {
-        [self setupAudioSession:_speakerPhone];
-        
-        NSError *error = nil;
-        
-        [self setupListenerBlocks];
-        [[AVAudioSession sharedInstance] setActive:YES error:&error];
-        
-        if (error)
-            OT_AUDIO_DEBUG(@"Audiosession setActive %@",error);
-        
+        [self setupAudioSession];
         isAudioSessionSetup = YES;
     }
     
