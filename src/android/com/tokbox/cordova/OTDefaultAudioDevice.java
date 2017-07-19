@@ -61,9 +61,7 @@ public class OTDefaultAudioDevice extends BaseAudioDevice  {
 
     private AudioManager m_audioManager;
 
-    private boolean m_isVideo;
-
-    public OTDefaultAudioDevice(Context context, boolean isVideo) {
+    public OTDefaultAudioDevice(Context context) {
         this.m_context = context;
 
         try {
@@ -84,10 +82,7 @@ public class OTDefaultAudioDevice extends BaseAudioDevice  {
         m_audioManager = (AudioManager) m_context
                 .getSystemService(Context.AUDIO_SERVICE);
 
-        m_isVideo = isVideo;
-
         m_audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
-        m_audioManager.setSpeakerphoneOn(!isVideo);
     }
 
     @Override
@@ -291,13 +286,6 @@ public class OTDefaultAudioDevice extends BaseAudioDevice  {
         }
 
         m_bufferedPlaySamples = 0;
-
-        if (m_isVideo) {
-            setOutputMode(OutputMode.SpeakerPhone);
-        } else {
-            setOutputMode(OutputMode.Handset);
-        }
-
         m_shutdownRenderThread = false;
         new Thread(m_renderThread).start();
 
@@ -328,6 +316,8 @@ public class OTDefaultAudioDevice extends BaseAudioDevice  {
     @Override
     public boolean startRenderer() {
         // start playout
+        registerHeadsetReceiver();
+
         try {
             m_audioTrack.play();
 
@@ -458,22 +448,6 @@ public class OTDefaultAudioDevice extends BaseAudioDevice  {
         return this.m_rendererSettings;
     }
 
-    /**
-     * Communication modes handling
-     */
-
-    public boolean setOutputMode(OutputMode mode) {
-        super.setOutputMode(mode);
-        if (mode == OutputMode.Handset) {
-            unregisterHeadsetReceiver();
-            m_audioManager.setSpeakerphoneOn(false);
-        } else {
-            m_audioManager.setSpeakerphoneOn(true);
-            registerHeadsetReceiver();
-        }
-        return true;
-    }
-
     private BroadcastReceiver m_headsetReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -513,16 +487,12 @@ public class OTDefaultAudioDevice extends BaseAudioDevice  {
 
     @Override
     public void onPause() {
-        if (getOutputMode() == OutputMode.SpeakerPhone) {
-            unregisterHeadsetReceiver();
-        }
+        unregisterHeadsetReceiver();
     }
 
     @Override
     public void onResume() {
-        if (getOutputMode() == OutputMode.SpeakerPhone) {
-            registerHeadsetReceiver();
-        }
+        registerHeadsetReceiver();
     }
 }
 
