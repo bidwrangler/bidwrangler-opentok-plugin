@@ -240,11 +240,8 @@ PublisherKit.PublisherListener, Publisher.CameraListener, Session.StreamProperti
             }
             streamCollection.put(arg1.getStreamId(), arg1);
             if (arg0.getPublishVideo()) {
-                AudioDeviceManager.getAudioDevice().setOutputMode(BaseAudioDevice.OutputMode.SpeakerPhone);
                 this.mView.setKeepScreenOn(true);
                 cordova.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            } else {
-                AudioDeviceManager.getAudioDevice().setOutputMode(BaseAudioDevice.OutputMode.Handset);
             }
             triggerStreamCreated(arg1, "publisherEvents");
         }
@@ -314,11 +311,6 @@ PublisherKit.PublisherListener, Publisher.CameraListener, Session.StreamProperti
                 }
                 mSubscriber.setSubscribeToAudio( subToAudio );
                 mSubscriber.setSubscribeToVideo( subToVideo );
-                if (subToVideo) {
-                    AudioDeviceManager.getAudioDevice().setOutputMode(BaseAudioDevice.OutputMode.SpeakerPhone);
-                } else {
-                    AudioDeviceManager.getAudioDevice().setOutputMode(BaseAudioDevice.OutputMode.Handset);
-                }
                 
                 Log.i(TAG, "subscriber view is added to parent view!");
             }
@@ -448,34 +440,20 @@ PublisherKit.PublisherListener, Publisher.CameraListener, Session.StreamProperti
                 return true;
             }
         } else if (action.equals("initSession")) {
-            boolean isVideo = (args.length() == 3) && (args.getBoolean(2)); // have 3 arguments, and last one is true
             Context context = cordova.getActivity().getApplicationContext();
 
             /* set audio driver */
-            OTDefaultAudioDevice otDefaultAudioDevice = new OTDefaultAudioDevice(context,isVideo);
-            otDefaultAudioDevice.setOutputMode(isVideo?BaseAudioDevice.OutputMode.SpeakerPhone:BaseAudioDevice.OutputMode.Handset);
+            OTDefaultAudioDevice otDefaultAudioDevice = new OTDefaultAudioDevice(context);
             AudioDeviceManager.setAudioDevice(otDefaultAudioDevice);
             
             Session.Builder builder = new Session.Builder(context, args.getString(0), args.getString(1));
             mSession = builder.build();
 
             Log.i(TAG, "created new session with data: " + args.toString());
-            
-            PowerManager powerManager = (PowerManager) cordova.getActivity().getSystemService(Context.POWER_SERVICE);
-            int wakeLockMode = PowerManager.PARTIAL_WAKE_LOCK;
-            
-            if (isVideo) { // video call
-                AudioDeviceManager.getAudioDevice().setOutputMode(BaseAudioDevice.OutputMode.SpeakerPhone);
-            } else { // audio call
-                AudioDeviceManager.getAudioDevice().setOutputMode(BaseAudioDevice.OutputMode.Handset);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    if (powerManager.isWakeLockLevelSupported(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK)) {
-                        wakeLockMode = PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK;
-                    }
-                }
-            }
+
             /* wakeLock */
-            wakeLock = powerManager.newWakeLock(wakeLockMode, TAG);
+            PowerManager powerManager = (PowerManager) cordova.getActivity().getSystemService(Context.POWER_SERVICE);
+            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
             wakeLock.acquire();
             
             mSession.setSessionListener(this);
@@ -558,30 +536,7 @@ PublisherKit.PublisherListener, Publisher.CameraListener, Session.StreamProperti
                     runsub.setPropertyFromArray(args);
                     cordova.getActivity().runOnUiThread(runsub);
                 }
-            }
-            
-            // Audio methods
-        } else if (action.equals("setupAudioSession")) {
-            if (AudioDeviceManager.getAudioDevice() != null) {
-                if (args.getBoolean(0)) {
-                    AudioDeviceManager.getAudioDevice().setOutputMode(BaseAudioDevice.OutputMode.SpeakerPhone);
-                } else {
-                    AudioDeviceManager.getAudioDevice().setOutputMode(BaseAudioDevice.OutputMode.Handset);
-                }
-            }
-        } else if (action.equals("stopAudioSession")) {
-        } else if (action.equals("loudSpeaker")) {
-            Log.i(TAG, "loudSpeaker " + args.getBoolean(0));
-            if (AudioDeviceManager.getAudioDevice() != null) {
-                if (args.getBoolean(0)) {
-                    AudioDeviceManager.getAudioDevice().setOutputMode(BaseAudioDevice.OutputMode.SpeakerPhone);
-                } else {
-                    AudioDeviceManager.getAudioDevice().setOutputMode(BaseAudioDevice.OutputMode.Handset);
-                }
-            } else {
-                AudioManager am = (AudioManager) cordova.getActivity().getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-                am.setSpeakerphoneOn(args.getBoolean(0));
-            }
+            }            
         } else if (action.equals("requestAccess")) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 String checkPerm;
