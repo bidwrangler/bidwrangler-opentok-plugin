@@ -442,9 +442,9 @@ PublisherKit.PublisherListener, Publisher.CameraListener, Session.StreamProperti
         } else if (action.equals("initSession")) {
             Context context = cordova.getActivity().getApplicationContext();
 
-            /* set audio driver */
-            OTDefaultAudioDevice otDefaultAudioDevice = new OTDefaultAudioDevice(context);
-            AudioDeviceManager.setAudioDevice(otDefaultAudioDevice);
+            ///* set audio driver */
+            //OTDefaultAudioDevice otDefaultAudioDevice = new OTDefaultAudioDevice(context);
+            //AudioDeviceManager.setAudioDevice(otDefaultAudioDevice);
             
             Session.Builder builder = new Session.Builder(context, args.getString(0), args.getString(1));
             mSession = builder.build();
