@@ -26,8 +26,8 @@
 		</config-file>
 
       <!-- copy opentok sdk -->
-      <source-file src="src/android/libs/opentok-android-sdk-2.11.0.aar" target-dir="libs/" />
-		<resource-file src="src/android/libs/opentok-android-sdk-2.11.0.aar" target="libs/opentok-android-sdk-2.11.0.aar" />
+      <source-file src="src/android/libs/opentok-android-sdk-2.11.1.aar" target-dir="libs/" />
+		<resource-file src="src/android/libs/opentok-android-sdk-2.11.1.aar" target="libs/opentok-android-sdk-2.11.1.aar" />
 		<config-file target="config.xml" parent="/*">
 			<feature name="OpenTokPlugin">
 				<param name="android-package" value="com.tokbox.cordova.OpenTokAndroidPlugin"/>
