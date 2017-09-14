@@ -251,8 +251,10 @@ PublisherKit.PublisherListener, Publisher.CameraListener, Session.StreamProperti
         
         @Override
         public void onStreamDestroyed(PublisherKit arg0, Stream arg1) {
-            streamCollection.remove(arg1.getStreamId());
-            triggerStreamDestroyed(arg1, "publisherEvents");
+            if (arg1 != null) {
+                streamCollection.remove(arg1.getStreamId());
+                triggerStreamDestroyed(arg1, "publisherEvents");
+            }
         }
         
         @Override
