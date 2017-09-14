@@ -662,12 +662,14 @@
     [self triggerJSEvent: eventType withType: @"streamCreated" withData: data];
 }
 - (void)triggerStreamDestroyed: (OTStream*) stream withEventType: (NSString*) eventType{
-    [streamDictionary removeObjectForKey: stream.streamId];
-    
-    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary* streamData = [self createDataFromStream: stream];
-    [data setObject: streamData forKey: @"stream"];
-    [self triggerJSEvent: eventType withType: @"streamDestroyed" withData: data];
+    if (stream != nil) {
+        [streamDictionary removeObjectForKey: stream.streamId];
+        
+        NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary* streamData = [self createDataFromStream: stream];
+        [data setObject: streamData forKey: @"stream"];
+        [self triggerJSEvent: eventType withType: @"streamDestroyed" withData: data];
+    }
 }
 - (NSMutableDictionary*)createDataFromConnection:(OTConnection*)connection{
     NSLog(@"iOS creating data from stream: %@", connection);
