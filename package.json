@@ -1,5 +1,5 @@
 {
-  "name": "OpenTokCordovaPlugin",
+  "name": "cordova-plugin-opentok",
   "version": "1.0.6",
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -16,7 +16,7 @@
   },
   "description": "Cordova Plugin for OpenTok iOS === Weave video chat into your web (and now mobile!) application.",
   "cordova": {
-    "id": "com.tokbox.cordova.opentok",
+    "id": "cordova-plugin-opentok",
     "platforms": [
       "android",
       "ios"
