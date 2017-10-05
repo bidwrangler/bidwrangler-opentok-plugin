@@ -173,8 +173,10 @@ PublisherKit.PublisherListener, Publisher.CameraListener, Session.StreamProperti
         public void destroyPublisher() {
             ViewGroup parent = (ViewGroup) cordova.getActivity().findViewById(android.R.id.content);
             parent.removeView(this.mView);
-            this.mPublisher.destroy();
-            this.mPublisher = null;
+            if (this.mPublisher != null) {
+                this.mPublisher.destroy();
+                this.mPublisher = null;
+            }
         }
         
         public void run() {
