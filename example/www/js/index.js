@@ -18,47 +18,60 @@
  */
 
 var app = {
-  // Application Constructor
-  initialize: function() {
-    this.bindEvents();
-  },
-  // Bind Event Listeners
-  //
-  // Bind any events that are required on startup. Common events are:
-  // 'load', 'deviceready', 'offline', and 'online'.
-  bindEvents: function() {
-    document.addEventListener('deviceready', this.onDeviceReady, false);
-  },
-  // deviceready Event Handler
-  //
-  // The scope of 'this' is the event. In order to call the 'receivedEvent'
-  // function, we must explicity call 'app.receivedEvent(...);'
-  onDeviceReady: function() {
+    // Application Constructor
+    initialize: function() {
+        document.addEventListener('deviceready', this.onDeviceReady, false);
+    },
 
-      // Sign up for an OpenTok API Key at: https://tokbox.com/signup
-      // Then generate a sessionId and token at: https://dashboard.tokbox.com
-      var apiKey = ""; // INSERT YOUR API Key
-      var sessionId = ""; // INSERT YOUR SESSION ID
-      var token = ""; // INSERT YOUR TOKEN
+    // deviceready Event Handler
+    onDeviceReady: function() {
+        /*  NOTE: On Android 6+, in order to get access to the microphone/camera,
+            Runtime Permissions "RECORD_AUDIO" and "CAMERA" must be not only given
+            through AndroidManifest.xml, but also manually by the User.
+            Use (for instance) the plugin "cordova.plugins.diagnostic" and
+            its method "requestRuntimePermissions" to proceed. */
 
-      // Very simple OpenTok Code for group video chat
-      var publisher = TB.initPublisher(apiKey,'myPublisherDiv');
+        // Sign up for an OpenTok API Key at: https://tokbox.com/signup
+        // Then generate a sessionId and token at: https://dashboard.tokbox.com
+        var apiKey = ""; // INSERT YOUR API Key
+        var sessionId = ""; // INSERT YOUR SESSION ID
+        var token = ""; // INSERT YOUR TOKEN
 
-      var session = TB.initSession( apiKey, sessionId ); 
-      session.on({
-        'streamCreated': function( event ){
-            var div = document.createElement('div');
-            div.setAttribute('id', 'stream' + event.stream.streamId);
-            document.body.appendChild(div);
-            session.subscribe( event.stream, div.id, {subscribeToAudio: false} );
-        }
-      });
-      session.connect(token, function(){
-        session.publish( publisher );
-      });
+        var session = TB.initSession(apiKey, sessionId, true);
+        var publisher;
 
-  },
-  // Update DOM on a Received Event
-  receivedEvent: function(id) {
-  }
+        session.on({
+            // once the session is connected: initialize publisher & start streaming
+            'sessionConnected': function(event) {
+                console.log(event);
+                /* Options: [
+                        name, width, height, zIndex, publishAudio,
+                        publishVideo, cameraName, borderRadius,
+                        ratios.widthRatio, ratios.heightRatio,
+                        position.top, position.left
+                    ] */
+                var options = {};
+                publisher = TB.initPublisher('myPublisherDiv', options, function() {
+                    publisher.setSession(session);
+                    session.publish(publisher);
+                });
+            },
+            // anytime a new stream is published in the session
+            'streamCreated': function(event) {
+                if (publisher && publisher.stream &&
+                    publisher.stream.streamId === event.stream.streamId) {
+                    // ignore own/self stream (played in div 'myPublisherDiv')
+                    return;
+                }
+
+                var div = document.createElement('div');
+                div.setAttribute('id', 'stream' + event.stream.streamId);
+                document.body.appendChild(div);
+                session.subscribe(event.stream, div.id);
+            }
+        });
+
+        // accept a callback as a second parameter
+        session.connect(token);
+    }
 };
