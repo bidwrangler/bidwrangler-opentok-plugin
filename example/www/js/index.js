@@ -58,8 +58,7 @@ var app = {
             },
             // anytime a new stream is published in the session
             'streamCreated': function(event) {
-                if (publisher && publisher.stream &&
-                    publisher.stream.streamId === event.stream.streamId) {
+                if (!publisher.stream) {
                     // ignore own/self stream (played in div 'myPublisherDiv')
                     return;
                 }
