@@ -43,7 +43,6 @@ var app = {
         session.on({
             // once the session is connected: initialize publisher & start streaming
             'sessionConnected': function(event) {
-                console.log(event);
                 /* Options: [
                         name, width, height, zIndex, publishAudio,
                         publishVideo, cameraName, borderRadius,
@@ -58,11 +57,6 @@ var app = {
             },
             // anytime a new stream is published in the session
             'streamCreated': function(event) {
-                if (!publisher.stream) {
-                    // ignore own/self stream (played in div 'myPublisherDiv')
-                    return;
-                }
-
                 var div = document.createElement('div');
                 div.setAttribute('id', 'stream' + event.stream.streamId);
                 document.body.appendChild(div);
