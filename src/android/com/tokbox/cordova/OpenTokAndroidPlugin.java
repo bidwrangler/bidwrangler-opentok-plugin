@@ -173,8 +173,10 @@ PublisherKit.PublisherListener, Publisher.CameraListener, Session.StreamProperti
         public void destroyPublisher() {
             ViewGroup parent = (ViewGroup) cordova.getActivity().findViewById(android.R.id.content);
             parent.removeView(this.mView);
-            this.mPublisher.destroy();
-            this.mPublisher = null;
+            if (this.mPublisher != null) {
+                this.mPublisher.destroy();
+                this.mPublisher = null;
+            }
         }
         
         public void run() {
@@ -248,8 +250,10 @@ PublisherKit.PublisherListener, Publisher.CameraListener, Session.StreamProperti
         
         @Override
         public void onStreamDestroyed(PublisherKit arg0, Stream arg1) {
-            streamCollection.remove(arg1.getStreamId());
-            triggerStreamDestroyed(arg1, "publisherEvents");
+            if (arg1 != null) {
+                streamCollection.remove(arg1.getStreamId());
+                triggerStreamDestroyed(arg1, "publisherEvents");
+            }
         }
         
         @Override
