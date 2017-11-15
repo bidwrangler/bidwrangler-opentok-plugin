@@ -13,7 +13,7 @@ allprojects {
     repositories {
         jcenter()
         maven {
-            url  "https://tokbox-telefonica.bintray.com/maven/"
+            url  "https://tokbox.bintray.com/maven/"
         }
     }
 }
