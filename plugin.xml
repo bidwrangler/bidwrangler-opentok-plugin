@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="bidwrangler-opentok-plugin"
-    version="1.0.2">
+    version="1.0.3">
 
     <name>OpenTok Cordova Plugin</name>
     <description>Add live video streaming to your Cordova Application</description>
@@ -31,8 +31,8 @@
 		</config-file>
 
       <!-- copy opentok sdk -->
-      <source-file src="src/android/libs/opentok-android-sdk-2.12.1.aar" target-dir="libs/" />
-		<resource-file src="src/android/libs/opentok-android-sdk-2.12.1.aar" target="libs/opentok-android-sdk-2.12.1.aar" />
+      <source-file src="src/android/libs/opentok-android-sdk-2.12.1.aar" target-dir="opentok-libs/" />
+		<resource-file src="src/android/libs/opentok-android-sdk-2.12.1.aar" target="opentok-libs/opentok-android-sdk-2.12.1.aar" />
 		<config-file target="config.xml" parent="/*">
 			<feature name="OpenTokPlugin">
 				<param name="android-package" value="com.tokbox.cordova.OpenTokAndroidPlugin"/>
