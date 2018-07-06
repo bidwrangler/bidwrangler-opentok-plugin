@@ -3,15 +3,15 @@
 #     capabilities ( Capabilities ) - A Capabilities object includes info about capabilities of the client. All properties of capabilities object are undefined until connected to a session
 #     connection ( Connection ) - connection property is only available once session object dispatches sessionConnected event
 #     sessionId ( String ) - session Id for this session
-#   Methods: 
+#   Methods:
 #     connect( token, completionHandler )
 #     disconnect()
 #     forceDisconnect( connection ) - forces a remote connection to leave the session
 #     forceUnpublish( stream ) - forces publisher of the spicified stream to stop publishing the stream
 #     getPublisherForStream( stream ) - returns the local publisher object for a given stream
 #     getSubscribersForStream( stream ) - returns array of local subscriber objects for a given stream
-#     off( type, listener ) 
-#     on( type, listener ) 
+#     off( type, listener )
+#     on( type, listener )
 #     publish( publisher ) - starts publishing
 #     signal( signal, completionHandler)
 #     subscribe( stream, targetElement, properties ) : subscriber
@@ -195,6 +195,7 @@ class TBSession
   streamCreated: (event) =>
     pdebug "streamCreatedHandler", event
     stream = new TBStream( event.stream, @connections[event.stream.connectionId] )
+    stream.id = stream.streamId
     @streams[ stream.streamId ] = stream
     streamEvent = new TBEvent( {stream: stream } )
     @trigger("streamCreated", streamEvent)
