@@ -36,7 +36,6 @@ class TBSubscriber
 
   constructor: (stream, divOrDivName, properties) ->
     @element = if typeof divOrDivName is 'string' then document.getElementById(divOrDivName) else divOrDivName
-    @id = @element.id
     pdebug "creating subscriber", properties
     @streamId = stream.streamId
     if(properties? && properties.width=="100%" && properties.height == "100%")
@@ -44,7 +43,7 @@ class TBSubscriber
       @element.style.height="100%"
       properties.width = ""
       properties.height = ""
-    divPosition = getPosition(@id)
+    divPosition = getPosition(@element)
     subscribeToVideo="true"
     zIndex = TBGetZIndex(@element)
     if(properties?)
@@ -60,7 +59,7 @@ class TBSubscriber
     if (not width?) or width == 0 or (not height?) or height==0
       width = DefaultWidth
       height = DefaultHeight
-    obj = replaceWithVideoStream(@id, stream.streamId, {width:width, height:height})
+    obj = replaceWithVideoStream(@element, stream.streamId, {width:width, height:height})
     position = getPosition(obj.id)
     ratios = TBGetScreenRatios()
     borderRadius = TBGetBorderRadius(@element);

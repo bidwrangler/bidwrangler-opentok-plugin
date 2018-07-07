@@ -992,7 +992,6 @@ TBSubscriber = class TBSubscriber {
   constructor(stream, divOrDivName, properties) {
     var borderRadius, divPosition, height, name, obj, position, ratios, ref, subscribeToAudio, subscribeToVideo, width, zIndex;
     this.element = typeof divOrDivName === 'string' ? document.getElementById(divOrDivName) : divOrDivName;
-    this.id = this.element.id;
     pdebug("creating subscriber", properties);
     this.streamId = stream.streamId;
     if ((properties != null) && properties.width === "100%" && properties.height === "100%") {
@@ -1001,7 +1000,7 @@ TBSubscriber = class TBSubscriber {
       properties.width = "";
       properties.height = "";
     }
-    divPosition = getPosition(this.id);
+    divPosition = getPosition(this.element);
     subscribeToVideo = "true";
     zIndex = TBGetZIndex(this.element);
     if ((properties != null)) {
@@ -1021,7 +1020,7 @@ TBSubscriber = class TBSubscriber {
       width = DefaultWidth;
       height = DefaultHeight;
     }
-    obj = replaceWithVideoStream(this.id, stream.streamId, {
+    obj = replaceWithVideoStream(this.element, stream.streamId, {
       width: width,
       height: height
     });
