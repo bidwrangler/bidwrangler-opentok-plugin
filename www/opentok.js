@@ -226,10 +226,10 @@ streamElements = {}; // keep track of DOM elements for each stream
 
 // Helper methods
 
-getPosition = function(divName) {
+getPosition = function(divOrDivName) {
   var computedStyle, curleft, curtop, height, marginBottom, marginLeft, marginRight, marginTop, pubDiv, transform, width;
   // Get the position of element
-  pubDiv = document.getElementById(divName);
+  pubDiv = typeof divOrDivName === 'string' ? document.getElementById(divOrDivName) : divOrDivName;
   if (!pubDiv) {
     return {};
   }
@@ -256,10 +256,10 @@ getPosition = function(divName) {
   };
 };
 
-replaceWithVideoStream = function(divName, streamId, properties) {
+replaceWithVideoStream = function(divOrDivName, streamId, properties) {
   var element, internalDiv, typeClass, videoElement;
   typeClass = streamId === PublisherStreamId ? PublisherTypeClass : SubscriberTypeClass;
-  element = document.getElementById(divName);
+  element = typeof divOrDivName === 'string' ? document.getElementById(divOrDivName) : divOrDivName;
   element.setAttribute("class", `OT_root ${typeClass}`);
   element.setAttribute("data-streamid", streamId);
   element.style.width = properties.width + "px";
@@ -939,7 +939,7 @@ TBStream = class TBStream {
 //     id (string) - dom id of the subscriber
 //     stream (Stream) - stream to which you are subscribing
 //     element (Element) - HTML DOM element containing the Subscriber
-//   Methods: 
+//   Methods:
 //     getAudioVolume()
 //     getImgData() : String
 //     getStyle() : Objects
@@ -989,22 +989,21 @@ TBSubscriber = class TBSubscriber {
     return this;
   }
 
-  constructor(stream, divName, properties) {
-    var borderRadius, divPosition, element, height, name, obj, position, ratios, ref, subscribeToAudio, subscribeToVideo, width, zIndex;
-    element = document.getElementById(divName);
-    this.id = divName;
-    this.element = element;
+  constructor(stream, divOrDivName, properties) {
+    var borderRadius, divPosition, height, name, obj, position, ratios, ref, subscribeToAudio, subscribeToVideo, width, zIndex;
+    this.element = typeof divOrDivName === 'string' ? document.getElementById(divOrDivName) : divOrDivName;
+    this.id = this.element.id;
     pdebug("creating subscriber", properties);
     this.streamId = stream.streamId;
     if ((properties != null) && properties.width === "100%" && properties.height === "100%") {
-      element.style.width = "100%";
-      element.style.height = "100%";
+      this.element.style.width = "100%";
+      this.element.style.height = "100%";
       properties.width = "";
       properties.height = "";
     }
-    divPosition = getPosition(divName);
+    divPosition = getPosition(this.id);
     subscribeToVideo = "true";
-    zIndex = TBGetZIndex(element);
+    zIndex = TBGetZIndex(this.element);
     if ((properties != null)) {
       width = properties.width || divPosition.width;
       height = properties.height || divPosition.height;
@@ -1022,13 +1021,13 @@ TBSubscriber = class TBSubscriber {
       width = DefaultWidth;
       height = DefaultHeight;
     }
-    obj = replaceWithVideoStream(divName, stream.streamId, {
+    obj = replaceWithVideoStream(this.id, stream.streamId, {
       width: width,
       height: height
     });
     position = getPosition(obj.id);
     ratios = TBGetScreenRatios();
-    borderRadius = TBGetBorderRadius(element);
+    borderRadius = TBGetBorderRadius(this.element);
     pdebug("final subscriber position", position);
     Cordova.exec(TBSuccess, TBError, OTPlugin, "subscribe", [stream.streamId, position.top, position.left, width, height, zIndex, subscribeToAudio, subscribeToVideo, ratios.widthRatio, ratios.heightRatio, borderRadius]);
   }

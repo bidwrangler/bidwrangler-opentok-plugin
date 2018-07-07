@@ -7,9 +7,9 @@ streamElements = {} # keep track of DOM elements for each stream
 #
 # Helper methods
 #
-getPosition = (divName) ->
+getPosition = (divOrDivName) ->
   # Get the position of element
-  pubDiv = document.getElementById(divName)
+  pubDiv = if typeof divOrDivName is 'string' then document.getElementById(divOrDivName) else divOrDivName
   if !pubDiv then return {}
   computedStyle = if window.getComputedStyle then getComputedStyle(pubDiv, null) else {}
   transform = new WebKitCSSMatrix(window.getComputedStyle(pubDiv).transform || '')
@@ -32,9 +32,9 @@ getPosition = (divName) ->
     height:height - (marginTop + marginBottom)
   }
 
-replaceWithVideoStream = (divName, streamId, properties) ->
+replaceWithVideoStream = (divOrDivName, streamId, properties) ->
   typeClass = if streamId == PublisherStreamId then PublisherTypeClass else SubscriberTypeClass
-  element = document.getElementById(divName)
+  element = if typeof divOrDivName is 'string' then document.getElementById(divOrDivName) else divOrDivName
   element.setAttribute( "class", "OT_root #{typeClass}" )
   element.setAttribute( "data-streamid", streamId )
   element.style.width = properties.width+"px"

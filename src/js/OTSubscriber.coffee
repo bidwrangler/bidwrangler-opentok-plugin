@@ -3,7 +3,7 @@
 #     id (string) - dom id of the subscriber
 #     stream (Stream) - stream to which you are subscribing
 #     element (Element) - HTML DOM element containing the Subscriber
-#   Methods: 
+#   Methods:
 #     getAudioVolume()
 #     getImgData() : String
 #     getStyle() : Objects
@@ -34,20 +34,19 @@ class TBSubscriber
   subscribeToVideo: (value) ->
     return @
 
-  constructor: (stream, divName, properties) ->
-    element = document.getElementById(divName)
-    @id = divName
-    @element = element
+  constructor: (stream, divOrDivName, properties) ->
+    @element = if typeof divOrDivName is 'string' then document.getElementById(divOrDivName) else divOrDivName
+    @id = @element.id
     pdebug "creating subscriber", properties
     @streamId = stream.streamId
     if(properties? && properties.width=="100%" && properties.height == "100%")
-      element.style.width="100%"
-      element.style.height="100%"
+      @element.style.width="100%"
+      @element.style.height="100%"
       properties.width = ""
       properties.height = ""
-    divPosition = getPosition( divName )
+    divPosition = getPosition(@id)
     subscribeToVideo="true"
-    zIndex = TBGetZIndex(element)
+    zIndex = TBGetZIndex(@element)
     if(properties?)
       width = properties.width || divPosition.width
       height = properties.height || divPosition.height
@@ -61,16 +60,13 @@ class TBSubscriber
     if (not width?) or width == 0 or (not height?) or height==0
       width = DefaultWidth
       height = DefaultHeight
-    obj = replaceWithVideoStream(divName, stream.streamId, {width:width, height:height})
+    obj = replaceWithVideoStream(@id, stream.streamId, {width:width, height:height})
     position = getPosition(obj.id)
     ratios = TBGetScreenRatios()
-    borderRadius = TBGetBorderRadius(element);
+    borderRadius = TBGetBorderRadius(@element);
     pdebug "final subscriber position", position
     Cordova.exec(TBSuccess, TBError, OTPlugin, "subscribe", [stream.streamId, position.top, position.left, width, height, zIndex, subscribeToAudio, subscribeToVideo, ratios.widthRatio, ratios.heightRatio, borderRadius] )
 
   # deprecating
   removeEventListener: (event, listener) ->
     return @
-
-
-
