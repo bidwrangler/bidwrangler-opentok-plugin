@@ -65,10 +65,10 @@ TBUpdateObjects = ()->
     # console.log("JS: Object updated")
     streamId = e.dataset.streamid
     # console.log("JS sessionId: " + streamId )
-    id = e.id
-    position = getPosition(id)
+    position = getPosition(e)
     Cordova.exec(TBSuccess, TBError, OTPlugin, "updateView", [streamId, position.top, position.left, position.width, position.height, TBGetZIndex(e), ratios.widthRatio, ratios.heightRatio, TBGetBorderRadius(e)] )
   return
+
 TBGenerateDomHelper = ->
   domId = "PubSub" + Date.now()
   div = document.createElement('div')

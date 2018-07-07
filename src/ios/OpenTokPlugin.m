@@ -170,7 +170,9 @@
 
         // Get Parameters
         NSString* name = [command.arguments objectAtIndex:0];
-        int top = [[command.arguments objectAtIndex:1] intValue];
+        CGRect rect = [[UIApplication sharedApplication] statusBarFrame];
+        CGFloat topOffset = MIN(rect.size.height, rect.size.width);
+        int top = [[command.arguments objectAtIndex:1] intValue] + topOffset;
         int left = [[command.arguments objectAtIndex:2] intValue];
         int width = [[command.arguments objectAtIndex:3] intValue];
         int height = [[command.arguments objectAtIndex:4] intValue];
@@ -216,7 +218,9 @@
 - (void)updateView:(CDVInvokedUrlCommand*)command{
     //NSString* callback = command.callbackId;
     NSString* sid = [command.arguments objectAtIndex:0];
-    int top = [[command.arguments objectAtIndex:1] intValue];
+    CGRect rect = [[UIApplication sharedApplication] statusBarFrame];
+    CGFloat topOffset = MIN(rect.size.height, rect.size.width);
+    int top = [[command.arguments objectAtIndex:1] intValue] + topOffset;
     int left = [[command.arguments objectAtIndex:2] intValue];
     int width = [[command.arguments objectAtIndex:3] intValue];
     int height = [[command.arguments objectAtIndex:4] intValue];
@@ -403,8 +407,9 @@
 
     // Get Parameters
     NSString* sid = [command.arguments objectAtIndex:0];
-
-    int top = [[command.arguments objectAtIndex:1] intValue];
+    CGRect rect = [[UIApplication sharedApplication] statusBarFrame];
+    CGFloat topOffset = MIN(rect.size.height, rect.size.width);
+    int top = [[command.arguments objectAtIndex:1] intValue] + topOffset;
     int left = [[command.arguments objectAtIndex:2] intValue];
     int width = [[command.arguments objectAtIndex:3] intValue];
     int height = [[command.arguments objectAtIndex:4] intValue];
