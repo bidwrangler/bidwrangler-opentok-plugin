@@ -227,32 +227,18 @@ streamElements = {}; // keep track of DOM elements for each stream
 // Helper methods
 
 getPosition = function(divOrDivName) {
-  var computedStyle, curleft, curtop, height, marginBottom, marginLeft, marginRight, marginTop, pubDiv, transform, width;
+  var pubDiv, rect;
   // Get the position of element
   pubDiv = typeof divOrDivName === 'string' ? document.getElementById(divOrDivName) : divOrDivName;
   if (!pubDiv) {
     return {};
   }
-  computedStyle = window.getComputedStyle ? getComputedStyle(pubDiv, null) : {};
-  transform = new WebKitCSSMatrix(window.getComputedStyle(pubDiv).transform || '');
-  width = pubDiv.offsetWidth;
-  height = pubDiv.offsetHeight;
-  curtop = pubDiv.offsetTop + transform.m41;
-  curleft = pubDiv.offsetLeft + transform.m42;
-  while ((pubDiv = pubDiv.offsetParent)) {
-    transform = new WebKitCSSMatrix(window.getComputedStyle(pubDiv).transform || '');
-    curleft += pubDiv.offsetLeft + transform.m41;
-    curtop += pubDiv.offsetTop + transform.m42;
-  }
-  marginTop = parseInt(computedStyle.marginTop) || 0;
-  marginBottom = parseInt(computedStyle.marginBottom) || 0;
-  marginLeft = parseInt(computedStyle.marginLeft) || 0;
-  marginRight = parseInt(computedStyle.marginRight) || 0;
+  rect = pubDiv.getBoundingClientRect();
   return {
-    top: curtop + marginTop,
-    left: curleft + marginLeft,
-    width: width - (marginLeft + marginRight),
-    height: height - (marginTop + marginBottom)
+    top: r.top,
+    left: r.left,
+    width: r.width,
+    height: r.height
   };
 };
 

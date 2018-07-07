@@ -11,25 +11,12 @@ getPosition = (divOrDivName) ->
   # Get the position of element
   pubDiv = if typeof divOrDivName is 'string' then document.getElementById(divOrDivName) else divOrDivName
   if !pubDiv then return {}
-  computedStyle = if window.getComputedStyle then getComputedStyle(pubDiv, null) else {}
-  transform = new WebKitCSSMatrix(window.getComputedStyle(pubDiv).transform || '')
-  width = pubDiv.offsetWidth
-  height = pubDiv.offsetHeight
-  curtop = pubDiv.offsetTop + transform.m41;
-  curleft = pubDiv.offsetLeft + transform.m42;
-  while(pubDiv = pubDiv.offsetParent)
-    transform = new WebKitCSSMatrix(window.getComputedStyle(pubDiv).transform || '')
-    curleft += pubDiv.offsetLeft + transform.m41
-    curtop += pubDiv.offsetTop + transform.m42
-  marginTop = parseInt(computedStyle.marginTop) || 0
-  marginBottom = parseInt(computedStyle.marginBottom) || 0
-  marginLeft = parseInt(computedStyle.marginLeft) || 0
-  marginRight = parseInt(computedStyle.marginRight) || 0
+  rect = pubDiv.getBoundingClientRect()
   return {
-    top:curtop + marginTop
-    left:curleft + marginLeft
-    width:width - (marginLeft + marginRight)
-    height:height - (marginTop + marginBottom)
+    top:r.top,
+    left:r.left,
+    width:r.width,
+    height:r.height
   }
 
 replaceWithVideoStream = (divOrDivName, streamId, properties) ->
