@@ -1010,7 +1010,7 @@ TBSubscriber = class TBSubscriber {
       width: width,
       height: height
     });
-    position = getPosition(obj.id);
+    position = getPosition(obj);
     ratios = TBGetScreenRatios();
     borderRadius = TBGetBorderRadius(this.element);
     pdebug("final subscriber position", position);

@@ -60,7 +60,7 @@ class TBSubscriber
       width = DefaultWidth
       height = DefaultHeight
     obj = replaceWithVideoStream(@element, stream.streamId, {width:width, height:height})
-    position = getPosition(obj.id)
+    position = getPosition(obj)
     ratios = TBGetScreenRatios()
     borderRadius = TBGetBorderRadius(@element);
     pdebug "final subscriber position", position
