@@ -235,10 +235,10 @@ getPosition = function(divOrDivName) {
   }
   rect = pubDiv.getBoundingClientRect();
   return {
-    top: r.top,
-    left: r.left,
-    width: r.width,
-    height: r.height
+    top: rect.top,
+    left: rect.left,
+    width: rect.width,
+    height: rect.height
   };
 };
 
