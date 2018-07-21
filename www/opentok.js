@@ -251,7 +251,6 @@ replaceWithVideoStream = function(divOrDivName, streamId, properties) {
   element.style.width = properties.width + "px";
   element.style.height = properties.height + "px";
   element.style.overflow = "hidden";
-  element.style['background-color'] = "#000000";
   streamElements[streamId] = element;
   internalDiv = document.createElement("div");
   internalDiv.setAttribute("class", VideoContainerClass);
