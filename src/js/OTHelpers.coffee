@@ -27,7 +27,8 @@ replaceWithVideoStream = (divOrDivName, streamId, properties) ->
   element.style.width = properties.width+"px"
   element.style.height = properties.height+"px"
   element.style.overflow = "hidden"
-  element.style['background-color'] = "rgba(0,0,0,0)"
+  element.style.backgroundColor = "transparent"
+  element.style.opacity = "1"
   streamElements[ streamId ] = element
 
   internalDiv = document.createElement( "div" )
