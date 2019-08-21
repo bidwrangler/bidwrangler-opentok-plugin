@@ -1,6 +1,6 @@
 {
   "name": "bidwrangler-opentok-plugin",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-coffee": "^0.10.1",
