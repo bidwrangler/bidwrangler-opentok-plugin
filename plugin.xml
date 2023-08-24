@@ -2,15 +2,15 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="bidwrangler-opentok-plugin"
-    version="1.0.14">
+    version="1.0.15">
 
     <name>OpenTok Cordova Plugin</name>
     <description>Add live video streaming to your Cordova Application</description>
     <license>Apache-2.0</license>
     <keywords>opentok,tokbox</keywords>
     <engines>
-      <engine name="cordova" version="=12.0.0"/>
-      <engine name="cordova-android" version="=12.0.0"/>
+      <engine name="cordova" version=">=7.0.0"/>
+      <engine name="cordova-android" version=">=7.0.0"/>
       <engine name="cordova-ios" version="=6.3.0"/>
     </engines>
 
