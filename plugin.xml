@@ -74,7 +74,7 @@
       <framework src="CFNetwork.framework" />
       <podspec>
          <pods use-frameworks="true">
-             <pod name="OpenTok" spec="~> 2.24.2" />
+             <pod name="OTXCFramework" spec="~> 2.24.2" />
          </pods>
       </podspec>
 
