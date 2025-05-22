@@ -1,12 +1,12 @@
 repositories{
-  jcenter()
+  mavenCentral()
   flatDir {
       dirs 'opentok-libs'
    }
 }
 
 dependencies {
-   compile(name:'opentok-android-sdk-2.16.1’, ext:'aar')
+   compile(name:'opentok-android-sdk-2.16.1', ext:'aar')
 }
 
 android {
