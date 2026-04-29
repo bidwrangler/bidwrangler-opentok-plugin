@@ -73,6 +73,9 @@
       <framework src="Security.framework" />
       <framework src="CFNetwork.framework" />
       <podspec>
+         <config>
+            <source url="https://cdn.cocoapods.org/"/>
+         </config>
          <pods use-frameworks="true">
              <pod name="OTXCFramework" spec="~> 2.24.2" />
          </pods>
